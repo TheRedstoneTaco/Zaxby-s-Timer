@@ -1,7 +1,3 @@
-// if food is cooked (when started and executed properly)
-var done = false;
-// to toggle the timer's blinking action
-var visible = true;
 // how many seconds it takes the food to cook
 var secondsToCook = 5;
 // keep track of how long the food has been cooking
@@ -20,6 +16,7 @@ function startBlinking()
   // famous annoying thing to see blinking in green
   $("#clock p").text("DONE");
   // 
+  clearInterval(blinker);
   blinker = setInterval(function() {
     $("#clock p").toggle();
   }, 500);
@@ -27,47 +24,47 @@ function startBlinking()
 
 $(document).ready(function()
 {
+  $("button").click(function()
+  {
+    if (count > 0)
+      {
+        return;
+      }
+    clearInterval(blinker);
+    $("#clock p").show();
+    init();
+  });
+  init();
+});
+
+function init()
+{
   
-  // keep updating display
-  updater = setInterval(function() {
-    var formatted = count;
-    $("#clock p").text(formatted);
-  }, 50);
+  count = secondsToCook;
   
   // increase count variable (in seconds)
   counter = setInterval(function() {
-    count ++;
+    count --;
   }, 1000);
   
+  // keep updating display
+  updater = setInterval(function() {
+    var formatted = count + "";
+    $("#clock p").text(formatted);
+  }, 50);
+  
   checker = setInterval(function() {
-    if (count >= secondsToCook)
+    if (count <= 0)
       {
-        done = true;
+        // done = true;
         // stop counting
         clearInterval(counter);
-        // start blinking
-        startBlinking();
         // stop updating, we'll do that in the blinker
         clearInterval(updater);
         // stop checking
         clearInterval(checker);
+        // start blinking
+        startBlinking();
       }
   }, 50);
-  
-/**
-  
-  // a = setInterval(function()
-                 {
-    
-    if (done == false)
-      {
-        seconds ++;
-      }
-    if ((seconds >= doneLimit) && (done == false))
-      {
-        done = true;
-        blink();
-      }
-   // }, 500);
-  */
-});
+}
