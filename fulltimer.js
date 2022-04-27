@@ -1,5 +1,5 @@
 // how many seconds it takes the food to cook
-var secondsToCook = 20;
+var secondsToCook = 500000;
 // keep track of how long the food has been cooking
 var count = 0;
 // amount of seconds until minute digit changes
@@ -14,24 +14,24 @@ var blinker;
 function startBlinking()
 {
   // famous annoying thing to see blinking in green
-  $("#clock p").text("DONE");
+  $("#f1 p").text("DONE");
   // 
   clearInterval(blinker);
   blinker = setInterval(function() {
-    $("#clock p").toggle();
-  }, 500);
+    $("#f1 p").toggle();
+  }, 300);
 }
 
 $(document).ready(function()
 {
-  $("button").click(function()
+  $("#f1 button").click(function()
   {
     if (count > 0)
       {
         return;
       }
     clearInterval(blinker);
-    $("#clock p").show();
+    $("#f1 p").show();
     init();
   });
   init();
@@ -50,7 +50,7 @@ function init()
   // keep updating display
   updater = setInterval(function() {
     var formatted = count + "";
-    $("#clock p").text(formatted);
+    $("#f1 p").text(formatted);
   }, 50);
   
   checker = setInterval(function() {
