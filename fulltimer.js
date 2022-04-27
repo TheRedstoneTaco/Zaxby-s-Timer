@@ -33,7 +33,7 @@ function startBlinking(i)
 }
 
 $(document).ready(function()
-{
+{ 
 
   $("button").click(function(){
     // get id from buttons "btn#"
@@ -58,9 +58,12 @@ $(document).ready(function()
         }
       }, 1000);
       // keep updating display
+      // https://stackoverflow.com/questions/6312993/javascript-seconds-to-time-string-with-format-hhmmss
       tickers[i] = setInterval(function() {
-        var formatted = cnt[i] + "";
-        $("#p" + (i+1)).text(formatted);
+        var date = new Date(0);
+        date.setSeconds(cnt[i]);
+        var timeString = date.toISOString().substr(14, 5);
+        $("#p" + (i+1)).text(timeString);
       }, 50);
       checkers[i] = setInterval(function() {
         if (cnt[i] <= 0)
