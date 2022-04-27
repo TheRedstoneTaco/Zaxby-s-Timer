@@ -1,235 +1,103 @@
+
 // TODO: Implement Obsolote Timer Ignoring
 
-// seconds to cook each
-var s2c = [240, 240, 0, 0, 360, 360, 270, 270];
-// keep track of how long the food has been cooking
-var cnt = [0, 0, 0, 0, 0, 0, 0];
+// flowchart variables
+// VERY IMPORTANT
+var idles = Array(8).fill(true);
+var dones = Array(8).fill(true);
 
-// intervals
-var updaters = [];
-var counters = [];
-var checkers = [];
-var blinkers = [];
+// seconds to cook each
+// var s2c = [240, 240, 0, 0, 360, 360, 270, 270];
+var s2c = Array(8).fill(5);
+// keep track of how long the food has been cooking
+var cnt = Array(8).fill(0);
 
 // amount of seconds until minute digit changes
 var sec_per_min = 2;
 
-// how many seconds it takes the food to cook
-// var secondsToCook = 500000;
-// keep track of how long the food has been cooking
-// var count = 0;
+// intervals
+var updaters = Array(8).fill(null);
+var counters = Array(8).fill(null);
+var checkers = Array(8).fill(null);
+var blinkers = Array(8).fill(null);
 
-function startBlinking()
+
+// Set text to DONE and flash that dude
+function startBlinking(id)
 {
+  $($(".col-3 p")[id])
   // famous annoying thing to see blinking in green
-  $("#f1 p").text("DONE");
-  // 
-  clearInterval(blinker);
-  blinker = setInterval(function() {
-    $("#f1 p").toggle();
-  }, 300);
+  .text("DONE");
+  blinkers[id] = setInterval(function() {
+    $($(".col-3")[id]).toggle();
+  }, 200);
 }
 
 $(document).ready(function()
 {
-  $("#f1 button").click(function()
-  {
-    if (count > 0)
-      {
-        return;
-      }
-    clearInterval(blinker);
-    $("#f1 p").show();
-    init();
-  });
-  init();
-});
 
-// function init()
-{
-  
-  for (var i = 0; i < 8; i++)
-  {
-    cnt[i] = s2c[i];
-  }
-  
-  // count variable (in seconds)
-  counter = setInterval(function() {
-    count --;
-  }, 1000);
-  
-  // keep updating display
-  updater = setInterval(function() {
-    var formatted = count + "";
-    $("#f1 p").text(formatted);
-  }, 50);
-  
-  checker = setInterval(function() {
-    if (count <= 0)
-      {
-        // done = true;
-        // stop counting
-        clearInterval(counter);
-        // stop updating, we'll do that in the blinker
-        clearInterval(updater);
-        // stop checking
-        clearInterval(checker);
-        // start blinking
-        startBlinking();
-      }
-  }, 50);
-}
+  $("button").click(function(){
+    // get id from buttons "btn#"
+    var i = parseInt($(this).attr("id").slice(-1)) - 1;
 
-/**
-class Time
-  {
-    constructor(hour, minute, second)
+    if (i >= 2 && i <= 3)
     {
-      this.hour = hour;
-      this.minute = minute;
-      this.second = second;
+      return;
     }
-  }
-var timers = [-1, -1, -1, -1, -1, -1, -1, -1];
-var limits = [240, 240, 1, 1, 360, 360, 270, 270];
-
-var clockIDs = ["fingers_1", "fingers_2"];
-
-for (var i = 0; i < 8; i++)
-{
-  
-}
-
-function blink(i)
-{
-  
-}
-
-var countingInterval;
-
-$(document).ready(function()
-{
-  for (var i = 0; i < 8; i++)
+    // flowchart
+    if (idles[i] == true)
     {
-      $(".col-9").attr("blinking", "on");
+      // start cooking
+      cnt[i] = s2c[i];
+      // decrease count variable (in seconds)
+      counters[i] = setInterval(function() {
+        cnt[i] --;
+        if (cnt[i] <= 0)
+        {
+          dones[i] = true;
+        }
+      }, 1000);
+      // keep updating display
+      updaters[i] = setInterval(function() {
+        var formatted = cnt[i] + "";
+        $($(".col-3")[i]).text(formatted);
+      }, 50);
+      checkers[i] = setInterval(function() {
+        if (cnt[i] <= 0)
+          {
+            // done = true;
+            // stop counting
+            clearInterval(counters[i]);
+            // stop updating, we'll do that in the blinker
+            clearInterval(updaters[i]);
+            // stop checking
+            clearInterval(checkers[i]);
+            idle = false;
+            done = true;
+            startBlinking(i);
+          }
+      }, 1000);
+      // flow
+      idles[i] = false;
+      dones[i] = false;
     }
-  $("button").click(function()
-  {
-    var whichID = parseInt($(this).attr("id").slice(-1), 10);
-    timers[whichID] = 0;
-  });
-  
-  countingInterval = setInterval(function() {
-    for (var i = 0; i < timers.length; i++)
+    else
+    {
+      if (dones[i] == false)
       {
-        if (timers[i] >= 0)
-          {
-            timers[i] = timers[i] + 1;
-          }
-        if (timers[i] >= limits[i])
-          {
-            blink(i);
-            timers[i] = 0;
-          }
+        // ignore
       }
-  }, 1000);
+      else
+      {
+        // restart / "toidle"
+        clearInterval(blinkers[i]);
+        $($(".col-3")[i]).show();
+        $($(".col-3")[i]).find("p").text("FING");
+        idles[i] = true;
+        dones[i] = true;
+      }
+    }
 
-  $(".col-9").text("00:00");
+  });
+
 });
-
-**/
-/**
-<div id="text" class="text-center">
-  Clockinator West 1.0
-</div>
-
-<div class="container">
-  
-  <div class="row align-items-center">
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <div class="hitme" id="time_1">Time</div>
-        </div>
-        <div class="col col-9" id="fingers_1">
-          Fingers 1
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_2">Time</button>
-        </div>
-        <div class="col col-9" id="fingers_2">
-          Fingers 2
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_3">Time</button>
-        </div>
-        <div class="col col-9" id="unknown_1">
-          UNKNOWN
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_4">Time</button>
-        </div>
-        <div class="col col-9" id="unknown_2">
-          UNKNOWN
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="row align-items-center">
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_5">Time</button>
-        </div>
-        <div class="col col-9" id="fingers_1">
-          Signatures 1
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_6">Time</button>
-        </div>
-        <div class="col col-9" id="signatures_2">
-          Signatures 2
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_7">Time</button>
-        </div>
-        <div class="col col-9" id="fries_1">
-          Fries 1
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col col-3">
-          <button type="button" class="btn btn-sm btn-primary" id="time_8">Time</button>
-        </div>
-        <div class="col col-9" id="fries_2">
-          Fries 2
-        </div>
-      </div>
-    </div>
-  </div>
-  
-</div>
-**/
