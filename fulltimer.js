@@ -1,5 +1,5 @@
-
-// TODO: Implement Obsolote Timer Ignoring
+// Idle display titles
+var titles = ["FING", "FING", "OBSL", "OBSL", "SIGN", "SIGN", "FRYS", "FRYS"];
 
 // flowchart variables
 // VERY IMPORTANT
@@ -16,20 +16,19 @@ var cnt = Array(8).fill(0);
 var sec_per_min = 2;
 
 // intervals
-var updaters = Array(8).fill(null);
+var tickers = Array(8).fill(null);
 var counters = Array(8).fill(null);
 var checkers = Array(8).fill(null);
 var blinkers = Array(8).fill(null);
 
 
 // Set text to DONE and flash that dude
-function startBlinking(id)
+function startBlinking(i)
 {
-  $($(".col-3 p")[id])
   // famous annoying thing to see blinking in green
-  .text("DONE");
-  blinkers[id] = setInterval(function() {
-    $($(".col-3")[id]).toggle();
+  $("#p" + (i + 1)).text("DONE");
+  blinkers[i] = setInterval(function() {
+    $("#p" + (i + 1)).toggle();
   }, 200);
 }
 
@@ -38,7 +37,7 @@ $(document).ready(function()
 
   $("button").click(function(){
     // get id from buttons "btn#"
-    var i = parseInt($(this).attr("id").slice(-1)) - 1;
+    var i = parseInt($(this).attr("id").charAt(3)) - 1;
 
     if (i >= 2 && i <= 3)
     {
@@ -55,21 +54,22 @@ $(document).ready(function()
         if (cnt[i] <= 0)
         {
           dones[i] = true;
+          clearInterval(counters[i]);
         }
       }, 1000);
       // keep updating display
-      updaters[i] = setInterval(function() {
+      tickers[i] = setInterval(function() {
         var formatted = cnt[i] + "";
-        $($(".col-3")[i]).text(formatted);
+        $("#p" + (i+1)).text(formatted);
       }, 50);
       checkers[i] = setInterval(function() {
         if (cnt[i] <= 0)
           {
-            // done = true;
-            // stop counting
-            clearInterval(counters[i]);
-            // stop updating, we'll do that in the blinker
-            clearInterval(updaters[i]);
+           
+            // stop counting variables
+            // clearInterval(counters[i]);
+            // stop ticking, we'll toggle in the blinker instead
+            clearInterval(tickers[i]);
             // stop checking
             clearInterval(checkers[i]);
             idle = false;
@@ -91,8 +91,8 @@ $(document).ready(function()
       {
         // restart / "toidle"
         clearInterval(blinkers[i]);
-        $($(".col-3")[i]).show();
-        $($(".col-3")[i]).find("p").text("FING");
+        $("#p" + (i + 1)).show();
+        $("#p" + (i + 1)).text(titles[i]);
         idles[i] = true;
         dones[i] = true;
       }
