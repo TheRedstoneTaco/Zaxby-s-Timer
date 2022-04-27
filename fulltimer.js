@@ -1,15 +1,23 @@
-// how many seconds it takes the food to cook
-var secondsToCook = 500000;
+// TODO: Implement Obsolote Timer Ignoring
+
+// seconds to cook each
+var s2c = [240, 240, 0, 0, 360, 360, 270, 270];
 // keep track of how long the food has been cooking
-var count = 0;
+var cnt = [0, 0, 0, 0, 0, 0, 0];
+
+// intervals
+var updaters = [];
+var counters = [];
+var checkers = [];
+var blinkers = [];
+
 // amount of seconds until minute digit changes
 var sec_per_min = 2;
 
-// intervals
-var updater;
-var counter;
-var checker;
-var blinker;
+// how many seconds it takes the food to cook
+// var secondsToCook = 500000;
+// keep track of how long the food has been cooking
+// var count = 0;
 
 function startBlinking()
 {
@@ -37,12 +45,15 @@ $(document).ready(function()
   init();
 });
 
-function init()
+// function init()
 {
   
-  count = secondsToCook;
+  for (var i = 0; i < 8; i++)
+  {
+    cnt[i] = s2c[i];
+  }
   
-  // increase count variable (in seconds)
+  // count variable (in seconds)
   counter = setInterval(function() {
     count --;
   }, 1000);
